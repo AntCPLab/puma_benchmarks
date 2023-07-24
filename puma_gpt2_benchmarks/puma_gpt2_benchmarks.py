@@ -140,7 +140,7 @@ def calculate_logits(params, input_ids):
 
     
 def eval_puma_newToken():
-    ids = tokenizer.encode(text[0], max_length=32, truncation=True, padding='max_length', return_tensors = 'jax')
+    ids = tokenizer.encode(text[0], return_tensors = 'jax')
 
     with hack_softmax_context("hijack jax softmax", enabled = True), hack_gelu_context("hijack jax gelu", enabled=True):
         input_ids = ppd.device("P1")(lambda x: x)(ids)
@@ -154,7 +154,7 @@ def eval_puma_perp():
     total_loss = 0
     total_count = 0
     for j in range(batch_num):
-        ids = tokenizer.encode(text[j], max_length=32, truncation=True, padding='max_length', return_tensors = 'jax')
+        ids = tokenizer.encode(text[j], return_tensors = 'jax')
         labels = ids[:, 1:]
 
         with hack_softmax_context("hijack jax softmax", enabled = True), hack_gelu_context("hijack jax gelu", enabled=True):
@@ -172,16 +172,15 @@ def eval_puma_perp():
     return perplexity.item()
 
 def eval_cpu_newToken():
-    ids = tokenizer.encode(text[0], max_length=32, truncation=True, padding='max_length', return_tensors = 'jax')
+    ids = tokenizer.encode(text[0], return_tensors = 'jax')
     outputs_ids = calculate_newToken(pretrained_model.params, ids, new_token=1)
     return outputs_ids
 
 def eval_cpu_perp():
     total_loss = 0
     total_count = 0
-    for i in range(1):
-        ids = tokenizer.encode(text[i], max_length=32, truncation=True, padding='max_length', return_tensors = 'jax')
-        print(ids)
+    for i in range(batch_num):
+        ids = tokenizer.encode(text[i], return_tensors = 'jax')
         labels = ids[:, 1:]
         logits = calculate_logits(pretrained_model.params, ids)
         loss = jnp.sum(jax.nn.log_softmax(logits, axis=-1) * jax.nn.one_hot(labels, logits.shape[-1]), axis=-1)
