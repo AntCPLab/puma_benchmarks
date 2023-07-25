@@ -1,4 +1,5 @@
 # Puma_benchmarks
+This repo is to reproduce the results in our paper [Puma](https://arxiv.org/abs/2307.12533)
 
 ## 0. Compile and Launch SecretFlow-SPU
 
