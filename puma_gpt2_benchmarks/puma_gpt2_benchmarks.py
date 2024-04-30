@@ -133,7 +133,7 @@ def calculate_newToken(params, input_ids, new_token=1):
 def calculate_logits(params, input_ids):
     model = FlaxGPT2LMHeadModel(config=model_config)
     outputs = model(input_ids=input_ids, params=params)
-    logits = outputs.logits[:, :-1, :].reshape(batch_num, -1)
+    logits = outputs.logits[:, :-1, :]
 
     return logits    
 
