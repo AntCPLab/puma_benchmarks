@@ -1,4 +1,4 @@
-# Copyright 2023 Ant Group Co., Ltd.
+# Copyright 2024 Ant Group Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ load("@rules_python//python:defs.bzl", "py_binary")
 package(default_visibility = ["//visibility:public"])
 
 py_binary(
-    name = "puma_bert_benchmarks",
-    srcs = ["puma_bert_benchmarks.py"],
+    name = "bench_whisper",
+    srcs = ["bench_whisper.py"],
     data = [
-        "//examples/python/ml/puma_bert_benchmarks:3pc.json",
+        "//examples/python/bench_whisper:3pc.json",
     ],
     deps = [
         "//spu:api",

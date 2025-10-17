@@ -17,10 +17,10 @@ load("@rules_python//python:defs.bzl", "py_binary")
 package(default_visibility = ["//visibility:public"])
 
 py_binary(
-    name = "puma_gpt2_benchmarks",
-    srcs = ["puma_gpt2_benchmarks.py"],
+    name = "griffin_gpt2",
+    srcs = ["griffin_gpt2.py"],
     data = [
-        "//examples/python/ml/puma_gpt2_benchmarks:3pc.json",
+        "//examples/python/ml/griffin_gpt2:3pc.json",
     ],
     deps = [
         "//spu:api",

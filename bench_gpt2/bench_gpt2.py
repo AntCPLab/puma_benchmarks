@@ -33,7 +33,7 @@ logits_fn=lambda logits: logits.argmax(-1)
 batch_num = 100
 
 parser = argparse.ArgumentParser(description='distributed driver.')
-parser.add_argument("-c", "--config", default="examples/python/ml/puma_gpt2_benchmarks/3pc.json")
+parser.add_argument("-c", "--config", default="examples/python/ml/bench_gpt2_benchmarks/3pc.json")
 args = parser.parse_args()
 with open(args.config, 'r') as file:
     conf = json.load(file)
@@ -139,7 +139,7 @@ def calculate_logits(params, input_ids):
 
 
     
-def eval_puma_newToken():
+def eval_bench_newToken():
     ids = tokenizer.encode(text[0], return_tensors = 'jax')
 
     with hack_softmax_context("hijack jax softmax", enabled = True), hack_gelu_context("hijack jax gelu", enabled=True):
@@ -150,7 +150,7 @@ def eval_puma_newToken():
 
     return outputs_ids
 
-def eval_puma_perp():
+def eval_bench_perp():
     total_loss = 0
     total_count = 0
     for j in range(batch_num):
@@ -196,11 +196,12 @@ if __name__ == '__main__':
     print("Perplexity of 100 wikitext-103-v1 sentences")
     perplexity_cpu = eval_cpu_perp()
     print("Perplexity-cpu:", perplexity_cpu)
-    perplexity_puma = eval_puma_perp()
-    print("Preplexity-puma:", perplexity_puma)
+
+    perplexity_bench = eval_bench_perp()
+    print("Preplexity-bench:", perplexity_bench)
 
     print("New Tokens of wikitext-103-v1 sentences")
     outids_cpu = eval_cpu_newToken()
     print("New Token-cpu:", tokenizer.decode(outids_cpu[0], skip_special_tokens=True))
-    outids_puma = eval_puma_newToken()
-    print("New Token-puma:", tokenizer.decode(outids_puma[0], skip_special_tokens=True))
+    outids_bench = eval_bench_newToken()
+    print("New Token-bench:", tokenizer.decode(outids_bench[0], skip_special_tokens=True))

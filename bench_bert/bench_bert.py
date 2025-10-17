@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# > bazel run -c opt //examples/python/ml/puma_benchmarks:puma_bert_benchmarks
+# > bazel run -c opt //examples/python/ml/bench_bert:bench_bert
 """ Finetuning a 🤗 Flax Transformers model for sequence classification on GLUE."""
 import json
 import logging
@@ -98,7 +98,7 @@ task_to_keys = {
 }
 
 parser = argparse.ArgumentParser(description='distributed driver.')
-parser.add_argument("-c", "--config", default="examples/python/ml/puma_bert_benchmarks/3pc.json")
+parser.add_argument("-c", "--config", default="examples/python/ml/bench_bert/3pc.json")
 args = parser.parse_args()
 
 with open(args.config, 'r') as file:
@@ -471,7 +471,7 @@ def benchmark_bert():
     metric_cpu = metric.compute()
     logger.info(f"Public Eval Completed: {metric_cpu}! Start Secure Eval:----")
     
-    ## Puma evaluation
+    ## bench evaluation
     with hack_softmax_context("hijack jax softmax"), hack_gelu_context("hack jax gelu"):
         params = ppd.device("P2")(lambda x: x)(model.params)
         eval_ids_secret = ppd.device("P1")(lambda x: x)(eval_ids)
@@ -479,9 +479,9 @@ def benchmark_bert():
         eval_label_secret = logits_fn(ppd.get(outputs))
     metric.add_batch(predictions=eval_label_secret, references=true_label)
 
-    metric_puma = metric.compute()
+    metric_bench = metric.compute()
 
-    logger.info(f"End, Secure Eval Completed: {metric_puma}")   
+    logger.info(f"End, Secure Eval Completed: {metric_bench}")   
 
 
 if __name__ == "__main__":
